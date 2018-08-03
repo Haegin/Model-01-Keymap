@@ -65,6 +65,12 @@
 // Support for topsy turvy keys (! when unshifted, 1 when shifted etc)
 #include "Kaleidoscope-TopsyTurvy.h"
 
+// Kaleidoscope Qukeys - a new plugin similar to DualUse but working
+#include "Kaleidoscope-Qukeys.h"
+
+    // Dual Use keys
+    /* &DualUse */
+
 /** This 'enum' is a list of all the macros used by the Model 01's firmware
   * The names aren't particularly important. What is important is that each
   * is unique.
@@ -104,7 +110,7 @@ enum { MACRO_VERSION_INFO,
   *   using ShiftToLayer() and LockLayer() keys to change the active keymap.
   *   the special nature of the PROG key
   *   keeping NUM and FN consistent and accessible on all layers
-  *
+  *77174 8498 RT0001
   *
   * The "keymaps" data structure is a list of the keymaps compiled into the firmware.
   * The order of keymaps in the list is important, as the ShiftToLayer(#) and LockLayer(#)
@@ -135,30 +141,30 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
   [DVORAK] = KEYMAP_STACKED
     (___,               Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
      Key_Backtick,      Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, Key_Tab,
-     CTL_T(Escape), Key_A,         Key_O,     Key_E,      Key_U, Key_I,
+     CTL_T(Escape),     Key_A,         Key_O,     Key_E,      Key_U, Key_I,
      Key_LeftShift,     Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
-     SFT_T(Escape), GUI_T(Spacebar), CTL_T(Backspace), Key_LeftShift,
-     ShiftToLayer(FUNCTION),
+     SFT_T(Escape), GUI_T(Spacebar), CTL_T(Backspace), LGUI(Key_Space),
+     LT(FUNCTION, Spacebar),
 
      M(MACRO_ANY), Key_6, Key_7, Key_8, Key_9, Key_0, Key_KeypadNumLock,
      Key_Enter,    Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
                    Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
      Key_RightAlt, Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
      LCTRL(Key_B),  LT(FUNCTION, Tab), LT(NUMPAD, Enter), ALT_T(Slash),
-     ShiftToLayer(NUMPAD)),
+     LT(NUMPAD, Enter)),
 
   [NUMPAD] =  KEYMAP_STACKED
   (___, ___,      ___,      ___,                  ___,                   ___, ___,
-   ___, TOPSY(1), TOPSY(2), Key_LeftCurlyBracket, Key_RightCurlyBracket, ___, ___,
-   ___, TOPSY(3), TOPSY(4), TOPSY(9),             TOPSY(0),              ___,
-   ___, TOPSY(5), TOPSY(6), Key_LeftBracket,      Key_RightBracket,      ___, ___,
+   ___, LSHIFT(Key_1), LSHIFT(Key_2), Key_LeftCurlyBracket, Key_RightCurlyBracket, Key_Pipe, ___,
+   ___, LSHIFT(Key_3), LSHIFT(Key_4), LSHIFT(Key_9),        LSHIFT(Key_0),         LSHIFT(Key_Backtick),
+   ___, LSHIFT(Key_5), LSHIFT(Key_6), Key_LeftBracket,      Key_RightBracket,      Key_Backtick, ___,
    ___, ___, ___, ___,
    ___,
 
    M(MACRO_VERSION_INFO), ___,           ___,         ___,         ___,         ___,                ___,
-   ___,                   Key_Equals,    Key_Keypad7, Key_Keypad8, Key_Keypad9, Key_KeypadMultiply, ___,
-                          Key_Minus,     Key_Keypad4, Key_Keypad5, Key_Keypad6, Key_Backslash,      Key_Quote,
-   ___,                   Key_KeypadDot, Key_Keypad1, Key_Keypad2, Key_Keypad3, Key_Slash,          Key_Enter,
+   ___,                   Key_Equals,    Key_7, Key_8, Key_9, Key_KeypadMultiply, ___,
+                          Key_Minus,     Key_4, Key_5, Key_6, Key_Backslash,      Key_Quote,
+   ___,                   Key_KeypadDot, Key_1, Key_2, Key_3, Key_Slash,          Key_Enter,
    ___, ___, ___, Key_0,
    ___),
 
@@ -296,6 +302,12 @@ void setup() {
     // The boot greeting effect pulses the LED button for 10 seconds after the keyboard is first connected
     &BootGreetingEffect,
 
+    // Dual Use keys
+    /* &DualUse */
+
+    // Quantum keys
+    &Qukeys,
+
     // The hardware test mode, which can be invoked by tapping Prog, LED and the left Fn button at the same time.
     &TestMode,
 
@@ -342,10 +354,7 @@ void setup() {
 
     // The HostPowerManagement plugin enables waking up the host from suspend,
     // and allows us to turn LEDs off when it goes to sleep.
-    &HostPowerManagement,
-
-    // Dual Use keys
-    &DualUse
+    &HostPowerManagement
   );
 
   // While we hope to improve this in the future, the NumPad plugin
