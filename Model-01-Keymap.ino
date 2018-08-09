@@ -85,7 +85,12 @@
   */
 
 enum { MACRO_VERSION_INFO,
-       MACRO_ANY
+       MACRO_ANY,
+       MACRO_LT,
+       MACRO_LTE,
+       MACRO_GTE,
+       MACRO_GT,
+       MACRO_EPIPE
      };
 
 /** The Model 01's key layouts are defined as 'keymaps'. By default, there are three
@@ -139,10 +144,10 @@ enum { DVORAK, NUMPAD, FUNCTION }; // layers
 const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [DVORAK] = KEYMAP_STACKED
-    (___,               Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
-     Key_Backtick,      Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, Key_Tab,
-     CTL_T(Escape),     Key_A,         Key_O,     Key_E,      Key_U, Key_I,
-     Key_LeftShift,     Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
+    (___,                 Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
+     ALT_T(Key_Backtick), Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, Key_Tab,
+     CTL_T(Escape),       Key_A,         Key_O,     Key_E,      Key_U, Key_I,
+     Key_LeftShift,       Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
      SFT_T(Escape), GUI_T(Spacebar), CTL_T(Backspace), LGUI(Key_Space),
      LT(FUNCTION, Spacebar),
 
@@ -154,32 +159,32 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
      LT(NUMPAD, Enter)),
 
   [NUMPAD] =  KEYMAP_STACKED
-  (___, ___,      ___,      ___,                  ___,                   ___, ___,
-   ___, LSHIFT(Key_1), LSHIFT(Key_2), Key_LeftCurlyBracket, Key_RightCurlyBracket, Key_Pipe, ___,
-   ___, LSHIFT(Key_3), LSHIFT(Key_4), LSHIFT(Key_9),        LSHIFT(Key_0),         LSHIFT(Key_Backtick),
-   ___, LSHIFT(Key_5), LSHIFT(Key_6), Key_LeftBracket,      Key_RightBracket,      Key_Backtick, ___,
+  (___, Key_F1,        Key_F2,        Key_F3,               Key_F4,                Key_F5,               ___,
+   ___, LSHIFT(Key_1), LSHIFT(Key_2), Key_LeftCurlyBracket, Key_RightCurlyBracket, Key_Pipe,             ___,
+   ___, LSHIFT(Key_3), LSHIFT(Key_4), LSHIFT(Key_9),        LSHIFT(Key_0),         Key_Backtick,
+   ___, LSHIFT(Key_5), LSHIFT(Key_6), Key_LeftBracket,      Key_RightBracket,      LSHIFT(Key_Backtick), ___,
    ___, ___, ___, ___,
    ___,
 
-   M(MACRO_VERSION_INFO), ___,           ___,         ___,         ___,         ___,                ___,
-   ___,                   Key_Equals,    Key_7, Key_8, Key_9, Key_KeypadMultiply, ___,
-                          Key_Minus,     Key_4, Key_5, Key_6, Key_Backslash,      Key_Quote,
-   ___,                   Key_KeypadDot, Key_1, Key_2, Key_3, Key_Slash,          Key_Enter,
+   M(MACRO_VERSION_INFO), Key_F6,        Key_F7, Key_F8, Key_F9, Key_F10,            Key_F11,
+   ___,                   Key_Equals,    Key_7,  Key_8,  Key_9,  Key_KeypadMultiply, Key_F12,
+                          Key_Minus,     Key_4,  Key_5,  Key_6,  Key_Backslash,      Key_Quote,
+   ___,                   Key_KeypadDot, Key_1,  Key_2,  Key_3,  Key_Slash,          Key_Enter,
    ___, ___, ___, Key_0,
    ___),
 
   [FUNCTION] =  KEYMAP_STACKED
-  (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           XXX,
-   Key_Tab,  ___,              Key_mouseUp, ___,        Key_mouseBtnR, Key_mouseWarpEnd, Key_mouseWarpNE,
-   Key_Home, Key_mouseL,       Key_mouseDn, Key_mouseR, Key_mouseBtnL, Key_mouseWarpNW,
-   Key_End,  Key_PrintScreen,  Key_Insert,  ___,        Key_mouseBtnM, Key_mouseWarpSW,  Key_mouseWarpSE,
+  (___,      ___,              ___,          ___,          ___,           ___,            ___,
+   Key_Tab,  ___,              ___,          ___,          ___,           ___,            ___,
+   Key_Home, M(MACRO_LT),      M(MACRO_LTE), M(MACRO_GTE), M(MACRO_GT),   M(MACRO_EPIPE),
+   Key_End,  Key_PrintScreen,  Key_Insert,   ___,          ___,           ___,            ___,
    ___, ___, ___, ___,
    ___,
 
-   Consumer_ScanPreviousTrack, Key_F6,                   Key_F7,                     Key_F8,                   Key_F9,                 Key_F10,      Key_F11,
-   Consumer_PlaySlashPause,    Consumer_VolumeIncrement, Key_Home,                   Key_UpArrow,              Key_End,                Key_PageUp,   Key_F12,
-                               Consumer_VolumeDecrement, Key_LeftArrow,              Key_DownArrow,            Key_RightArrow,         Key_PageDown, ___,
-   Key_PcApplication,          Consumer_Mute,            Consumer_ScanPreviousTrack, Consumer_PlaySlashPause,  Consumer_ScanNextTrack, Key_Pipe,     ___,
+   Consumer_ScanPreviousTrack, ___,                      ___,                        ___,                      ___,                    ___,          ___,
+   Consumer_PlaySlashPause,    Key_Equals,               Key_Home,                   Key_UpArrow,              Key_End,                Key_PageUp,   ___,
+                               Consumer_VolumeIncrement, Key_LeftArrow,              Key_DownArrow,            Key_RightArrow,         Key_PageDown, ___,
+   Consumer_Mute,              Consumer_VolumeDecrement, Consumer_ScanPreviousTrack, Consumer_PlaySlashPause,  Consumer_ScanNextTrack, Key_Pipe,     ___,
    ___, ___, ___, ___,
    ___)
 
@@ -232,15 +237,45 @@ static void anyKeyMacro(uint8_t keyState) {
 
 const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   switch (macroIndex) {
+    case MACRO_VERSION_INFO:
+      versionInfoMacro(keyState);
+      break;
 
-  case MACRO_VERSION_INFO:
-    versionInfoMacro(keyState);
-    break;
+    case MACRO_ANY:
+      anyKeyMacro(keyState);
+      break;
 
-  case MACRO_ANY:
-    anyKeyMacro(keyState);
-    break;
+    case MACRO_LT:
+      if (keyToggledOn(keyState)) {
+        return Macros.type(PSTR("<"));
+      }
+      break;
+
+    case MACRO_LTE:
+      if (keyToggledOn(keyState)) {
+        return Macros.type(PSTR("<="));
+      }
+      break;
+
+    case MACRO_GTE:
+      if (keyToggledOn(keyState)) {
+        return Macros.type(PSTR(">="));
+      }
+      break;
+
+    case MACRO_GT:
+      if (keyToggledOn(keyState)) {
+        return Macros.type(PSTR(">"));
+      }
+      break;
+
+    case MACRO_EPIPE:
+      if (keyToggledOn(keyState)) {
+        return Macros.type(PSTR("|>"));
+      }
+      break;
   }
+
   return MACRO_NONE;
 }
 
