@@ -1,3 +1,4 @@
+
 // -*- mode: c++ -*-
 // Copyright 2016 Keyboardio, inc. <jesse@keyboard.io>
 // See "LICENSE" for license details
@@ -21,15 +22,12 @@
 
 // Support for macros
 #include "Kaleidoscope-Macros.h"
-
+harry.mills@relayplatform.com
 // Support for controlling the keyboard's LEDs
 #include "Kaleidoscope-LEDControl.h"
 
 // Support for "Numpad" mode, which is mostly just the Numpad specific LED mode
-/* #include "Kaleidoscope-NumPad.h" */
-
-// Support for an "LED off mode"
-#include "LED-Off.h"
+//#include "Kaleidoscope-NumPad.h"
 
 // Support for the "Boot greeting" effect, which pulses the 'LED' button for 10s
 // when the keyboard is connected to a computer (or that computer is powered on)
@@ -49,9 +47,13 @@
 
 // Support for an LED mode that lights up the keys as you press them
 #include "Kaleidoscope-LED-Stalker.h"
+#include "Kaleidoscope-LED-Wavepool.h"
 
 // Support for an LED mode that prints the keys you press in letters 4px high
 #include "Kaleidoscope-LED-AlphaSquare.h"
+
+// Heatmap showing which keys are used most
+#include "Kaleidoscope-Heatmap.h"
 
 // Support for Keyboardio's internal keyboard testing mode
 #include "Kaleidoscope-Model01-TestMode.h"
@@ -59,14 +61,13 @@
 // Support for host power management (suspend & wakeup)
 #include "Kaleidoscope-HostPowerManagement.h"
 
-// Support for dual use keys
-#include "Kaleidoscope-DualUse.h"
+// Support for dual use keys - now provided by QuKeys
+//#include "Kaleidoscope-DualUse.h"
 
 // Support for topsy turvy keys (! when unshifted, 1 when shifted etc)
-#include "Kaleidoscope-TopsyTurvy.h"
-
-// Kaleidoscope Qukeys - a new plugin similar to DualUse but working
-#include "Kaleidoscope-Qukeys.h"
+//#include "Kaleidoscope-TopsyTurvy.h"
+// Kaleidoscope Qukeys
+#include <Kaleidoscope-Qukeys.h>
 
     // Dual Use keys
     /* &DualUse */
@@ -85,7 +86,7 @@
   */
 
 enum { MACRO_VERSION_INFO,
-       MACRO_ANY,
+       MACRO_EMAIL,
        MACRO_LT,
        MACRO_LTE,
        MACRO_GTE,
@@ -134,61 +135,49 @@ enum { MACRO_VERSION_INFO,
   *
   */
 
-enum { DVORAK, NUMPAD, FUNCTION }; // layers
+//enum { DVORAK, NUMPAD, FUNCTION }; // layers
 
 /* This comment temporarily turns off astyle's indent enforcement
  *   so we can make the keymaps actually resemble the physical key layout better
  */
 // *INDENT-OFF*
 
-const Key keymaps[][ROWS][COLS] PROGMEM = {
+#define DVORAK_KM 0
+#define NUMPAD_KM 1
+#define FUNCTION_KM 2
 
-  [DVORAK] = KEYMAP_STACKED
-    (___,                 Key_1,           Key_2,            Key_3,      Key_4, Key_5, Key_LEDEffectNext,
-     ALT_T(Backtick), Key_Quote,       Key_Comma,        Key_Period, Key_P, Key_Y, Key_Tab,
-     CTL_T(Escape),       Key_A,           Key_O,            Key_E,      Key_U, Key_I,
-     Key_LeftShift,       Key_Semicolon,   Key_Q,            Key_J,      Key_K, Key_X, LSHIFT(Key_Semicolon),
-     SFT_T(Escape),       GUI_T(Spacebar), CTL_T(Backspace), LGUI(Key_Space),
-     LT(FUNCTION, Spacebar),
+#define DVORAK  KEYMAP (\
+     Key_PrintScreen,     Key_1,           Key_2,            Key_3,      Key_4, Key_5, Key_LEDEffectNext,         M(MACRO_EMAIL), Key_6, Key_7, Key_8, Key_9, Key_0, Key_KeypadNumLock, \
+     MT(RightAlt, Backtick), Key_Quote,Key_Comma,        Key_Period, Key_P, Key_Y, Key_Tab,                   Key_Enter,    Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash, \
+     CTL_T(Escape),       Key_A,           Key_O,            Key_E,      Key_U, Key_I,                                          Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus, \
+     Key_LeftShift,       Key_Semicolon,   Key_Q,            Key_J,      Key_K, Key_X, LSHIFT(Key_Semicolon),     Key_Delete,   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals, \
+     SFT_T(Escape),       GUI_T(Spacebar), CTL_T(Backspace), LGUI(Key_Space),                                     LCTRL(Key_B), LT(FUNCTION_KM, Tab), LT(NUMPAD_KM, Enter), ALT_T(Slash), \
+     LT(FUNCTION_KM, Spacebar),                                                                                   LT(NUMPAD_KM, Enter), \
+)
 
-     M(MACRO_ANY), Key_6, Key_7, Key_8, Key_9, Key_0, Key_KeypadNumLock,
-     Key_Enter,    Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
-                   Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
-     Key_RightAlt, Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
-     LCTRL(Key_B),  LT(FUNCTION, Tab), LT(NUMPAD, Enter), ALT_T(Slash),
-     LT(NUMPAD, Enter)),
+#define NUMPAD  KEYMAP ( \
+   ___, Key_F1,        Key_F2,        Key_F3,               Key_F4,                Key_F5,               ___,     M(MACRO_VERSION_INFO), Key_F6,        Key_F7, Key_F8, Key_F9, Key_F10,            Key_F11, \
+   ___, LSHIFT(Key_1), LSHIFT(Key_2), Key_LeftCurlyBracket, Key_RightCurlyBracket, Key_Pipe,             ___,     ___,                   Key_Equals,    Key_7,  Key_8,  Key_9,  Key_KeypadMultiply, Key_F12, \
+   ___, LSHIFT(Key_3), LSHIFT(Key_4), LSHIFT(Key_9),        LSHIFT(Key_0),         Key_Backtick,                  Key_Minus,             Key_4,  Key_5, Key_6,  Key_Backslash,      Key_Quote, \
+   ___, LSHIFT(Key_5), LSHIFT(Key_6), Key_LeftBracket,      Key_RightBracket,      LSHIFT(Key_Backtick), ___,     ___,                   Key_KeypadDot, Key_1,  Key_2,  Key_3,  Key_Slash,          Key_Enter, \
+   ___, ___, ___, ___,    ___, ___, ___, Key_0, \
+   ___,                   ___, \
+)
 
-  [NUMPAD] =  KEYMAP_STACKED
-  (___, Key_F1,        Key_F2,        Key_F3,               Key_F4,                Key_F5,               ___,
-   ___, LSHIFT(Key_1), LSHIFT(Key_2), Key_LeftCurlyBracket, Key_RightCurlyBracket, Key_Pipe,             ___,
-   ___, LSHIFT(Key_3), LSHIFT(Key_4), LSHIFT(Key_9),        LSHIFT(Key_0),         Key_Backtick,
-   ___, LSHIFT(Key_5), LSHIFT(Key_6), Key_LeftBracket,      Key_RightBracket,      LSHIFT(Key_Backtick), ___,
-   ___, ___, ___, ___,
-   ___,
+#define FUNCTION  KEYMAP ( \
+   ___,      ___,              ___,          ___,          ___,           ___,            ___,    Consumer_ScanPreviousTrack, ___,                      ___,                        ___,                      ___,                    ___,          ___, \
+   Key_Tab,  ___,              ___,          ___,          ___,           ___,            ___,    Consumer_PlaySlashPause,    Key_Equals,               Key_Home,                   Key_UpArrow,              Key_End,                Key_PageUp,   ___, \
+   Key_Home, M(MACRO_LT),      M(MACRO_LTE), M(MACRO_GTE), M(MACRO_GT),   M(MACRO_EPIPE),                                Consumer_VolumeIncrement, Key_LeftArrow,              Key_DownArrow,            Key_RightArrow,         Key_PageDown, ___, \
+   Key_End,  Key_PrintScreen,  Key_Insert,   ___,          ___,           ___,            ___,    Consumer_Mute,              Consumer_VolumeDecrement, Consumer_ScanPreviousTrack, Consumer_PlaySlashPause,  Consumer_ScanNextTrack, Key_Pipe,     ___, \
+   ___, ___, ___, ___,    ___, ___, ___, ___, \
+   ___,    ___ \
+)
 
-   M(MACRO_VERSION_INFO), Key_F6,        Key_F7, Key_F8, Key_F9, Key_F10,            Key_F11,
-   ___,                   Key_Equals,    Key_7,  Key_8,  Key_9,  Key_KeypadMultiply, Key_F12,
-                          Key_Minus,     Key_4,  Key_5,  Key_6,  Key_Backslash,      Key_Quote,
-   ___,                   Key_KeypadDot, Key_1,  Key_2,  Key_3,  Key_Slash,          Key_Enter,
-   ___, ___, ___, Key_0,
-   ___),
-
-  [FUNCTION] =  KEYMAP_STACKED
-  (___,      ___,              ___,          ___,          ___,           ___,            ___,
-   Key_Tab,  ___,              ___,          ___,          ___,           ___,            ___,
-   Key_Home, M(MACRO_LT),      M(MACRO_LTE), M(MACRO_GTE), M(MACRO_GT),   M(MACRO_EPIPE),
-   Key_End,  Key_PrintScreen,  Key_Insert,   ___,          ___,           ___,            ___,
-   ___, ___, ___, ___,
-   ___,
-
-   Consumer_ScanPreviousTrack, ___,                      ___,                        ___,                      ___,                    ___,          ___,
-   Consumer_PlaySlashPause,    Key_Equals,               Key_Home,                   Key_UpArrow,              Key_End,                Key_PageUp,   ___,
-                               Consumer_VolumeIncrement, Key_LeftArrow,              Key_DownArrow,            Key_RightArrow,         Key_PageDown, ___,
-   Consumer_Mute,              Consumer_VolumeDecrement, Consumer_ScanPreviousTrack, Consumer_PlaySlashPause,  Consumer_ScanNextTrack, Key_Pipe,     ___,
-   ___, ___, ___, ___,
-   ___)
-
-};
+KEYMAPS(
+  DVORAK,
+  NUMPAD,
+  FUNCTION
+)
 
 /* Re-enable astyle's indent enforcement */
 // *INDENT-ON*
@@ -204,24 +193,6 @@ static void versionInfoMacro(uint8_t keyState) {
     Macros.type(PSTR(BUILD_INFORMATION));
   }
 }
-
-/** anyKeyMacro is used to provide the functionality of the 'Any' key.
- *
- * When the 'any key' macro is toggled on, a random alphanumeric key is
- * selected. While the key is held, the function generates a synthetic
- * keypress event repeating that randomly selected key.
- *
- */
-
-static void anyKeyMacro(uint8_t keyState) {
-  static Key lastKey;
-  if (keyToggledOn(keyState))
-    lastKey.keyCode = Key_A.keyCode + (uint8_t)(millis() % 36);
-
-  if (keyIsPressed(keyState))
-    kaleidoscope::hid::pressKey(lastKey);
-}
-
 
 /** macroAction dispatches keymap events that are tied to a macro
     to that macro. It takes two uint8_t parameters.
@@ -241,8 +212,10 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
       versionInfoMacro(keyState);
       break;
 
-    case MACRO_ANY:
-      anyKeyMacro(keyState);
+    case MACRO_EMAIL:
+      if (keyToggledOn(keyState)) {
+        return Macros.type(PSTR("harry.porter-mills@relayplatform.com"));
+      }
       break;
 
     case MACRO_LT:
@@ -286,13 +259,13 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 // Keyboardio Model 01.
 
 
-static kaleidoscope::LEDSolidColor solidRed(160, 0, 0);
-static kaleidoscope::LEDSolidColor solidOrange(140, 70, 0);
-static kaleidoscope::LEDSolidColor solidYellow(130, 100, 0);
-static kaleidoscope::LEDSolidColor solidGreen(0, 160, 0);
-static kaleidoscope::LEDSolidColor solidBlue(0, 70, 130);
-static kaleidoscope::LEDSolidColor solidIndigo(0, 0, 170);
-static kaleidoscope::LEDSolidColor solidViolet(130, 0, 120);
+static kaleidoscope::plugin::LEDSolidColor solidRed(160, 0, 0);
+static kaleidoscope::plugin::LEDSolidColor solidOrange(140, 70, 0);
+static kaleidoscope::plugin::LEDSolidColor solidYellow(130, 100, 0);
+static kaleidoscope::plugin::LEDSolidColor solidGreen(0, 160, 0);
+static kaleidoscope::plugin::LEDSolidColor solidBlue(0, 70, 130);
+static kaleidoscope::plugin::LEDSolidColor solidIndigo(0, 0, 170);
+static kaleidoscope::plugin::LEDSolidColor solidViolet(130, 0, 120);
 
 /** toggleLedsOnSuspendResume toggles the LEDs off when the host goes to sleep,
  * and turns them back on when it wakes up.
@@ -300,15 +273,13 @@ static kaleidoscope::LEDSolidColor solidViolet(130, 0, 120);
 void toggleLedsOnSuspendResume(kaleidoscope::HostPowerManagement::Event event) {
   switch (event) {
   case kaleidoscope::HostPowerManagement::Suspend:
-    LEDControl.paused = true;
-    LEDControl.set_all_leds_to({0, 0, 0});
-    LEDControl.syncLeds();
+    LEDControl.disable();
     break;
   case kaleidoscope::HostPowerManagement::Resume:
-    LEDControl.paused = false;
-    LEDControl.refreshAll();
+    LEDControl.enable();
     break;
   case kaleidoscope::HostPowerManagement::Sleep:
+    LEDControl.disable();
     break;
   }
 }
@@ -349,9 +320,12 @@ void hostPowerManagementEventHandler(kaleidoscope::HostPowerManagement::Event ev
     // and slowly moves the rainbow across your keyboard
     LEDRainbowWaveEffect,
 
+    // Show a heatmap of how much the keys are used
+    HeatmapEffect,
+
     // The chase effect follows the adventure of a blue pixel which chases a red pixel across
     // your keyboard. Spoiler: the blue pixel never catches the red pixel
-    LEDChaseEffect,
+    //LEDChaseEffect,
 
     // These static effects turn your keyboard's LEDs a variety of colors
     /* solidRed, solidOrange, solidYellow, solidGreen, solidBlue, solidIndigo, solidViolet, */
@@ -361,14 +335,15 @@ void hostPowerManagementEventHandler(kaleidoscope::HostPowerManagement::Event ev
 
     // The AlphaSquare effect prints each character you type, using your
     // keyboard's LEDs as a display
-    AlphaSquareEffect,
+    //AlphaSquareEffect,
 
     // The stalker effect lights up the keys you've pressed recently
     StalkerEffect,
+    WavepoolEffect,
 
     // The numpad plugin is responsible for lighting up the 'numpad' mode
     // with a custom LED effect
-    /* &NumPad, */
+    //oqNumPad,
 
     // The macros plugin adds support for macros
     Macros,
@@ -393,21 +368,26 @@ void setup() {
 
   // While we hope to improve this in the future, the NumPad plugin
   // needs to be explicitly told which keymap layer is your numpad layer
-  /* NumPad.numPadLayer = NUMPAD; */
+  //NumPad.numPadLayer = NUMPAD_KM;
 
   // We configure the AlphaSquare effect to use RED letters
-  AlphaSquare.color = { 255, 0, 0 };
+  //AlphaSquare.color = { 255, 0, 0 };
 
   // We set the brightness of the rainbow effects to 150 (on a scale of 0-255)
   // This draws more than 500mA, but looks much nicer than a dimmer effect
   LEDRainbowEffect.brightness(150);
   LEDRainbowWaveEffect.brightness(150);
 
+  //HeatmapEffect.heat_colors = heat_colors;
+  HeatmapEffect.heat_colors_length = 4;
+
   // The LED Stalker mode has a few effects. The one we like is
   // called 'BlazingTrail'. For details on other options,
   // see https://github.com/keyboardio/Kaleidoscope-LED-Stalker
   /* StalkerEffect.variant = STALKER(BlazingTrail); */
   StalkerEffect.variant = STALKER(Haunt);
+  WavepoolEffect.idle_timeout = 5000;  // 5 seconds
+  WavepoolEffect.activate();
 
   // We want the keyboard to be able to wake the host up from suspend.
   HostPowerManagement.enableWakeup();
@@ -419,7 +399,10 @@ void setup() {
 
   // Set the time we need to hold a dual use key to switch the toggle version
   // on (in milliseconds)
-  DualUse.time_out = 150;
+  Qukeys.setHoldTimeout(150);
+  Qukeys.setOverlapThreshold(40);
+  Qukeys.setMinimumHoldTime(30);
+  Qukeys.setMinimumPriorInterval(40);
 }
 
 /** loop is the second of the standard Arduino sketch functions.
